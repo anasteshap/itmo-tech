@@ -1,5 +1,7 @@
 package itmo.anasteshap.models.accounts;
 
+import itmo.anasteshap.exceptions.AccountException;
+import itmo.anasteshap.exceptions.TransactionException;
 import lombok.NonNull;
 import itmo.anasteshap.entities.Client;
 import itmo.anasteshap.models.Amount;
@@ -18,16 +20,21 @@ public class CreditAccount extends Account {
     }
 
     @Override
+    public Object getConfiguration() throws CloneNotSupportedException {
+        return configuration.clone();
+    }
+
+    @Override
     public void decreaseAmount(@NonNull Amount sum) {
         if (client.isDubious()) {
             if (sum.getValue().compareTo(limitForDubiousClient.getValue()) > 0)
-                throw new RuntimeException();
+                throw TransactionException.sumExceedingLimit(sum, limitForDubiousClient);
         }
 
         if (sum.getValue().compareTo(balance.getValue()) > 0) {
             var num = balance.getValue().subtract(sum.getValue()).subtract(configuration.getCommission().getValue());
             if (num.abs().compareTo(configuration.getLimit().getValue()) < 0)
-                throw new RuntimeException();
+                throw AccountException.notEnoughMoney();
         }
 
         balance = (sum.getValue().compareTo(balance.getValue()) <= 0)

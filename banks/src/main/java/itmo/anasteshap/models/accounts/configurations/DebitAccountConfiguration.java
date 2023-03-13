@@ -10,6 +10,11 @@ import itmo.anasteshap.models.Percent;
  */
 @Data
 @AllArgsConstructor
-public class DebitAccountConfiguration {
+public class DebitAccountConfiguration implements Cloneable{
     @NonNull private Percent percent;
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

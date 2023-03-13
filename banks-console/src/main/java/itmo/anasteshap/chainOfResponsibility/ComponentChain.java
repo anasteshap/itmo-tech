@@ -1,7 +1,6 @@
 package itmo.anasteshap.chainOfResponsibility;
 
 import lombok.NonNull;
-import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.function.Consumer;
 
@@ -28,7 +27,7 @@ public class ComponentChain extends BaseChain {
             }
         } else {
             if (enumerator.hasNext()) {
-                throw new RuntimeException("Wrong command");
+                throw new RuntimeException("wrong command");
             }
             this.action.accept(null);
         }

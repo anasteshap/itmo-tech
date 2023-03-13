@@ -33,7 +33,7 @@ public class AppManager {
                 var strings = new ArrayList<>(Arrays.asList(console.split("\\s")));
 
                 if (!strings.iterator().hasNext()) {
-                    throw new RuntimeException();
+                    throw new RuntimeException("wrong command");
                 }
 
                 app.process(strings.listIterator());

@@ -1,25 +1,23 @@
 package itmo.anasteshap.models.accounts;
 
 import itmo.anasteshap.entities.Client;
+import itmo.anasteshap.exceptions.TransactionException;
 import lombok.Getter;
 import lombok.NonNull;
 import itmo.anasteshap.models.Amount;
 import itmo.anasteshap.models.transaction.Transaction;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Abstract bank account
  */
 public abstract class Account {
-    private final List<Transaction> transactions = new ArrayList<>();
+    protected final List<Transaction> transactions = new ArrayList<>();
     @Getter
-    private final BankAccountTypes type;
+    protected final BankAccountTypes type;
     @Getter
-    private final UUID id;
+    protected final UUID id;
     @Getter
     protected final Client client;
     @Getter
@@ -30,6 +28,8 @@ public abstract class Account {
         this.id = UUID.randomUUID();
         this.client = client;
     }
+
+    public abstract Object getConfiguration() throws CloneNotSupportedException;
 
     public List<Transaction> getTransactions() {
         return Collections.unmodifiableList(transactions);
@@ -45,7 +45,7 @@ public abstract class Account {
         return transactions.stream()
                 .filter(x -> x.getId().equals(transactionId))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> TransactionException.transactionDoesNotExist(transactionId));
     }
 
     /**
@@ -71,7 +71,7 @@ public abstract class Account {
      */
     public void saveChanges(@NonNull Transaction transaction) {
         if (transactions.contains(transaction)) {
-            throw new RuntimeException();
+            throw TransactionException.transactionAlreadyExists(transaction.getId());
         }
         transactions.add(transaction);
     }

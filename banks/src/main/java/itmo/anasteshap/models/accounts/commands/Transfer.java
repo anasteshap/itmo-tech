@@ -1,5 +1,6 @@
 package itmo.anasteshap.models.accounts.commands;
 
+import itmo.anasteshap.exceptions.TransactionException;
 import lombok.NonNull;
 import itmo.anasteshap.models.Amount;
 import itmo.anasteshap.models.accounts.Account;
@@ -24,9 +25,8 @@ public class Transfer implements BalanceOperationCommand {
             fromAccount.decreaseAmount(sum);
         } catch (Exception e) {
             fromAccount.increaseAmount(sum);
-            throw new RuntimeException();
+            throw TransactionException.failedTransaction("couldn't withdraw money from 1 account");
         }
-
         toAccount.increaseAmount(sum);
     }
 
@@ -36,9 +36,8 @@ public class Transfer implements BalanceOperationCommand {
             toAccount.decreaseAmount(sum);
         } catch (Exception e) {
             toAccount.increaseAmount(sum);
-            throw new RuntimeException();
+            throw TransactionException.failedTransaction("couldn't withdraw money from 2 account");
         }
-
         fromAccount.increaseAmount(sum);
     }
 }

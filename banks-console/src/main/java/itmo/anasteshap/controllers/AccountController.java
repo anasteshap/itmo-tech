@@ -2,6 +2,7 @@ package itmo.anasteshap.controllers;
 
 
 import itmo.anasteshap.entities.Bank;
+import itmo.anasteshap.exceptions.AccountException;
 import lombok.NonNull;
 
 import java.time.Period;
@@ -66,7 +67,7 @@ public class AccountController {
         int periodInDays = scanner.nextInt();
 
         if (periodInDays == 0) {
-            throw new RuntimeException();
+            throw AccountException.invalidPeriodOfAccount();
         }
 
         var bank = getBank();

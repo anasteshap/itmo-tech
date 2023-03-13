@@ -1,5 +1,7 @@
 package itmo.anasteshap.entities;
 
+import itmo.anasteshap.exceptions.AccountException;
+import itmo.anasteshap.exceptions.ObserverException;
 import itmo.anasteshap.models.accounts.*;
 import itmo.anasteshap.models.accounts.commands.Withdraw;
 import itmo.anasteshap.models.dateTimeProvider.Clock;
@@ -47,9 +49,9 @@ public class Bank {
      * @return account
      */
     public Account getAccount(UUID accountId) {
-        var account = this.accounts.stream().filter(x -> x.getId().equals(accountId)).findFirst(); // по-другому бы как-то
+        var account = accounts.stream().filter(x -> x.getId().equals(accountId)).findFirst();
         if (account.isEmpty()) {
-            throw new RuntimeException();
+            throw AccountException.accountDoesNotExist(accountId);
         }
 
         return account.get();
@@ -61,10 +63,10 @@ public class Bank {
      * @param observer subscriber
      */
     public void subscribe(@NonNull Observer<String> observer) {
-        if (this.subscribers.contains(observer)) {
-            throw new RuntimeException();
+        if (subscribers.contains(observer)) {
+            throw ObserverException.subscriberAlreadyExists();
         }
-        this.subscribers.add(observer);
+        subscribers.add(observer);
     }
 
     /**
@@ -73,8 +75,8 @@ public class Bank {
      * @param observer subscriber
      */
     public void unsubscribe(@NonNull Observer<String> observer) {
-        if (!this.subscribers.remove(observer)) {
-            throw new RuntimeException();
+        if (!subscribers.remove(observer)) {
+            throw ObserverException.subscriberDoesNotExist();
         }
     }
 
@@ -85,8 +87,8 @@ public class Bank {
      * @return new credit account
      */
     public Account createCreditAccount(Client client) {
-        Account account = new CreditAccount(client, this.bankConfiguration);
-        this.accounts.add(account);
+        Account account = new CreditAccount(client, bankConfiguration);
+        accounts.add(account);
         return account;
     }
 
@@ -97,8 +99,8 @@ public class Bank {
      * @return new debit account
      */
     public Account createDebitAccount(Client client) {
-        Account account = new DebitAccount(this.clock, client, this.bankConfiguration);
-        this.accounts.add(account);
+        Account account = new DebitAccount(clock, client, bankConfiguration);
+        accounts.add(account);
         return account;
     }
 
@@ -109,8 +111,8 @@ public class Bank {
      * @return new deposit account
      */
     public Account createDepositAccount(Client client, Period periodInDays) {
-        Account account = new DepositAccount(this.clock, client, this.bankConfiguration, periodInDays);
-        this.accounts.add(account);
+        Account account = new DepositAccount(clock, client, bankConfiguration, periodInDays);
+        accounts.add(account);
         return account;
     }
 
@@ -120,7 +122,7 @@ public class Bank {
      * @param percent new percent
      */
     public void changeDebitPercent(Percent percent) {
-        this.bankConfiguration.getDebitAccount().setPercent(percent);
+        bankConfiguration.getDebitAccount().setPercent(percent);
         notify(BankAccountTypes.Debit, "New debit percent: " + percent.value().toString());
     }
 
@@ -130,7 +132,7 @@ public class Bank {
      * @param depositPercents new percents
      */
     public void changeDepositPercent(List<DepositPercent> depositPercents) {
-        this.bankConfiguration.getDepositAccount().setPercents(depositPercents);
+        bankConfiguration.getDepositAccount().setPercents(depositPercents);
         var percents = new StringBuilder();
         depositPercents.forEach(x -> percents.append(String.format("%s - %s: %s\n",
                 x.getLeftBorder(),
@@ -145,7 +147,7 @@ public class Bank {
      * @param commission new commission
      */
     public void changeCreditCommission(Amount commission) {
-        this.bankConfiguration.getCreditAccount().setCommission(commission);
+        bankConfiguration.getCreditAccount().setCommission(commission);
         notify(BankAccountTypes.Credit, "New credit commission: " + commission);
     }
 
@@ -155,7 +157,7 @@ public class Bank {
      * @param creditLimit new credit limit
      */
     public void changeCreditLimit(Amount creditLimit) {
-        this.bankConfiguration.getCreditAccount().setLimit(creditLimit);
+        bankConfiguration.getCreditAccount().setLimit(creditLimit);
         notify(BankAccountTypes.Credit, "New credit limit: " + creditLimit);
     }
 
@@ -165,7 +167,7 @@ public class Bank {
      * @param limitForDubiousClient new limit for dubious client
      */
     public void changeLimitForDubiousClient(Amount limitForDubiousClient) {
-        this.bankConfiguration.setLimitForDubiousClient(limitForDubiousClient);
+        bankConfiguration.setLimitForDubiousClient(limitForDubiousClient);
         String data = "New limit for dubious client: " + limitForDubiousClient;
         notify(BankAccountTypes.Credit, data);
         notify(BankAccountTypes.Debit, data);
@@ -180,11 +182,11 @@ public class Bank {
      * @return new income transaction
      */
     public Transaction income(UUID accountId, Amount sum) {
-        var account = this.accounts.stream()
+        var account = accounts.stream()
                 .filter(x -> x.getId().equals(accountId))
                 .findFirst();
         if (account.isEmpty()) {
-            throw new RuntimeException();
+            throw AccountException.accountDoesNotExist(accountId);
         }
         var transaction = new Transaction(new Income(account.get(), sum));
         transaction.doTransaction();
@@ -200,11 +202,11 @@ public class Bank {
      * @return new withdraw transaction
      */
     public Transaction withdraw(UUID accountId, Amount sum) {
-        var account = this.accounts.stream()
+        var account = accounts.stream()
                 .filter(x -> x.getId().equals(accountId))
                 .findFirst();
         if (account.isEmpty()) {
-            throw new RuntimeException();
+            throw AccountException.accountDoesNotExist(accountId);
         }
 
         var transaction = new Transaction(new Withdraw(account.get(), sum));
@@ -220,8 +222,8 @@ public class Bank {
      * @param data       message of changes
      */
     private void notify(BankAccountTypes selectType, String data) {
-        this.accounts.stream()
-                .filter(acc -> acc.getType().equals(selectType) && this.subscribers.contains(acc.getClient()))
+        accounts.stream()
+                .filter(acc -> acc.getType().equals(selectType) && subscribers.contains(acc.getClient()))
                 .distinct()
                 .map(Account::getClient)
                 .forEach(x -> x.update(data));

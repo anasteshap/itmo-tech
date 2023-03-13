@@ -10,7 +10,7 @@ import itmo.anasteshap.models.Amount;
  */
 @Data
 @AllArgsConstructor
-public class BankConfiguration {
+public class BankConfiguration implements Cloneable{
     @NonNull
     private CreditAccountConfiguration creditAccount;
     @NonNull
@@ -19,4 +19,9 @@ public class BankConfiguration {
     private DepositAccountConfiguration depositAccount;
     @NonNull
     private Amount limitForDubiousClient;
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

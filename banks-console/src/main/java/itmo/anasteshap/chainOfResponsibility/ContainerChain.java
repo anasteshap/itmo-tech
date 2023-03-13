@@ -1,8 +1,6 @@
 package itmo.anasteshap.chainOfResponsibility;
 
 import lombok.NonNull;
-
-import java.util.Iterator;
 import java.util.ListIterator;
 
 public class ContainerChain extends BaseChain {
@@ -25,7 +23,7 @@ public class ContainerChain extends BaseChain {
     @Override
     public void process(ListIterator<String> enumerator) {
         if (!enumerator.hasNext()) {
-            throw new RuntimeException("Wrong command");
+            throw new RuntimeException("wrong command");
         }
 
         String cmd = "";

@@ -1,6 +1,8 @@
 package itmo.anasteshap.models.accounts;
 
 import itmo.anasteshap.entities.Client;
+import itmo.anasteshap.exceptions.AccountException;
+import itmo.anasteshap.exceptions.TransactionException;
 import itmo.anasteshap.models.dateTimeProvider.Clock;
 import lombok.NonNull;
 import itmo.anasteshap.models.Amount;
@@ -30,13 +32,18 @@ public class DebitAccount extends Account {
     }
 
     @Override
+    public Object getConfiguration() throws CloneNotSupportedException {
+        return configuration.clone();
+    }
+
+    @Override
     public void decreaseAmount(@NonNull Amount sum) {
         if (balance.getValue().compareTo(sum.getValue()) < 0)
-            throw new RuntimeException();
+            throw AccountException.notEnoughMoney();
 
         if (client.isDubious()) {
             if (sum.getValue().compareTo(limitForDubiousClient.getValue()) > 0)
-                throw new RuntimeException();
+                throw TransactionException.sumExceedingLimit(sum, limitForDubiousClient);
         }
 
         balance = new Amount(balance.getValue().subtract(sum.getValue()));

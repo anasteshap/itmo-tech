@@ -50,9 +50,6 @@ public class Client implements Observer<String> {
      * @param address new address
      */
     public void setAddress(@NonNull String address) {
-        if (this.address == null) {
-            throw new RuntimeException();
-        }
         this.address = address;
     }
 
@@ -62,9 +59,6 @@ public class Client implements Observer<String> {
      * @param passport new passport
      */
     public void setPassport(@NonNull String passport) {
-        if (this.passport == null) {
-            throw new RuntimeException();
-        }
         this.passport = passport;
     }
 

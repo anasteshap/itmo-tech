@@ -2,6 +2,8 @@ package itmo.anasteshap.services;
 
 import itmo.anasteshap.entities.Bank;
 import itmo.anasteshap.entities.Client;
+import itmo.anasteshap.exceptions.BankException;
+import itmo.anasteshap.exceptions.ClientException;
 import itmo.anasteshap.interfaces.CentralBank;
 import itmo.anasteshap.models.accounts.Account;
 import itmo.anasteshap.models.accounts.commands.Transfer;
@@ -44,7 +46,7 @@ public class CentralBankImpl implements CentralBank {
 
     @Override
     public Bank getBankByName(String name) {
-        return findBankByName(name).orElseThrow(RuntimeException::new);
+        return findBankByName(name).orElseThrow(() -> BankException.bankDoesNotExist(name));
     }
 
     @Override
@@ -54,7 +56,7 @@ public class CentralBankImpl implements CentralBank {
 
     @Override
     public Client getClientById(UUID id) {
-        return findClientById(id).orElseThrow(RuntimeException::new);
+        return findClientById(id).orElseThrow(() -> ClientException.clientDoesNotExist(id));
     }
 
     @Override
@@ -70,7 +72,7 @@ public class CentralBankImpl implements CentralBank {
     @Override
     public Bank createBank(String name, Percent debitPercent, List<DepositPercent> depositPercents, Amount creditCommission, Amount creditLimit, Amount limitForDubiousClient) {
         if (!banks.stream().filter(x -> x.getName().equals(name)).toList().isEmpty()) {
-            throw new RuntimeException();
+            throw BankException.bankAlreadyExists(name);
         }
 
         var credit = new CreditAccountConfiguration(creditCommission, creditLimit);
@@ -86,13 +88,13 @@ public class CentralBankImpl implements CentralBank {
     @Override
     public Transaction replenishAccount(UUID bankId, UUID accountId, Amount amount) {
         var bank = banks.stream().filter(x -> x.getId().equals(bankId)).findFirst();
-        return bank.orElseThrow(RuntimeException::new).income(accountId, amount);
+        return bank.orElseThrow(() -> BankException.bankDoesNotExist(String.format("[id: %s]", bankId))).income(accountId, amount);
     }
 
     @Override
     public Transaction withdrawMoney(UUID bankId, UUID accountId, Amount amount) {
         var bank = banks.stream().filter(x -> x.getId().equals(bankId)).findFirst();
-        return bank.orElseThrow(RuntimeException::new).withdraw(accountId, amount);
+        return bank.orElseThrow(() -> BankException.bankDoesNotExist(String.format("[id: %s]", bankId))).withdraw(accountId, amount);
     }
 
     @Override
@@ -100,8 +102,8 @@ public class CentralBankImpl implements CentralBank {
         var bank1 = banks.stream().filter(x -> x.getId().equals(bankId1)).findFirst();
         var bank2 = banks.stream().filter(x -> x.getId().equals(bankId2)).findFirst();
 
-        Account fromAccount = bank1.orElseThrow(RuntimeException::new).getAccount(accountId1);
-        Account toAccount = bank2.orElseThrow(RuntimeException::new).getAccount(accountId2);
+        Account fromAccount = bank1.orElseThrow(() -> BankException.bankDoesNotExist(String.format("[id: %s]", bankId1))).getAccount(accountId1);
+        Account toAccount = bank2.orElseThrow(() -> BankException.bankDoesNotExist(String.format("[id: %s]", bankId2))).getAccount(accountId2);
 
         var transaction = new Transaction(new Transfer(toAccount, fromAccount, amount));
         transaction.doTransaction();
@@ -113,6 +115,6 @@ public class CentralBankImpl implements CentralBank {
     @Override
     public void cancelTransaction(UUID bankId, UUID accountId, UUID transactionId) {
         var bank = banks.stream().filter(x -> x.getId().equals(bankId)).findFirst();
-        bank.orElseThrow(RuntimeException::new).getAccount(accountId).getTransaction(transactionId).undo();
+        bank.orElseThrow(() -> BankException.bankDoesNotExist(String.format("[id: %s]", bankId))).getAccount(accountId).getTransaction(transactionId).undo();
     }
 }
