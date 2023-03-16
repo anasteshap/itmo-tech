@@ -6,9 +6,9 @@
 
     <groupId>itmo.anasteshap</groupId>
     <artifactId>tech</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
 
     <modules>
         <module>banks</module>
@@ -74,9 +74,6 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
-                            <mainClass>
-                                itmo.anasteshap.Main
-                            </mainClass>
                         </manifest>
                     </archive>
                 </configuration>

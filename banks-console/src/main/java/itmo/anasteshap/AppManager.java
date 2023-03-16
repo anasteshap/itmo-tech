@@ -44,7 +44,7 @@ public class AppManager {
         }
     }
 
-    private static void menu() {
+    private void menu() {
         System.out.println("\n---commands---");
 
         System.out.println("app bank create");
