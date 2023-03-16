@@ -79,9 +79,9 @@ public class ClientController {
 
         for (var client : clients) {
             System.out.println("---------------------");
-            System.out.format("name: %s", client.getName());
-            System.out.format("surname: %s", client.getSurname());
-            System.out.format("id: %s", client.getId());
+            System.out.format("name: %s\n", client.getName());
+            System.out.format("surname: %s\n", client.getSurname());
+            System.out.format("id: %s\n", client.getId());
         }
     }
 }

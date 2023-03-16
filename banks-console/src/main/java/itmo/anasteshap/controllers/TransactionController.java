@@ -78,7 +78,7 @@ public class TransactionController {
 
         var transactions = bank.getAccount(accountId).getTransactions();
         System.out.format("\n>> bank name: %s\n>> bankId: %s\n\n>> accountId: %s\n", bank.getName(), bank.getId(), accountId);
-        transactions.forEach(x -> System.out.format("idTransaction: %s", x.getId()));
+        transactions.forEach(x -> System.out.format("idTransaction: %s\n", x.getId()));
         System.out.println("+++ successfully +++");
     }
 

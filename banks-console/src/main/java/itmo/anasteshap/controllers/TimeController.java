@@ -21,11 +21,8 @@ public class TimeController {
     }
 
     public void dateNow(Void unused) {
-//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        var date1 = data.getCentralBank().getRewindClock().currentTime();
-//        String format = formatter.format(date1.getTime());
-//        System.out.println(format);
-        System.out.println(date1.get(Calendar.DAY_OF_MONTH) + "-" + date1.get(Calendar.MONTH) + "-" + date1.get(Calendar.YEAR));
+        var date = data.getCentralBank().getRewindClock().currentTime();
+        System.out.println(date.get(Calendar.DAY_OF_MONTH) + "-" + date.get(Calendar.MONTH) + "-" + date.get(Calendar.YEAR));
         System.out.println("+++ successfully +++");
     }
 

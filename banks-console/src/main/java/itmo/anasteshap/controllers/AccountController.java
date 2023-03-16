@@ -25,15 +25,15 @@ public class AccountController {
 
         for (Bank bank : banks) {
             if (bank.getAccounts().isEmpty()) {
-                System.out.format("----------bank name: %s :((((", bank.getName());
+                System.out.format("----------bank name: %s :((((\n", bank.getName());
                 continue;
             }
 
-            System.out.format("----------bank name: %s", bank.getName());
-            System.out.format("----------bank id: %s", bank.getId());
+            System.out.format("----------bank name: %s\n", bank.getName());
+            System.out.format("----------bank id: %s\n", bank.getId());
             System.out.println("accounts:");
             bank.getAccounts().forEach(x -> System.out.format("account id: %s\nclient id: %s\nbalance: %s\ntype: %s\n",
-                    x.getId(), x.getClient().getId(), x.getBalance(), x.getType()));
+                    x.getId(), x.getClient().getId(), x.getBalance().getValue(), x.getType()));
         }
     }
 
@@ -80,8 +80,8 @@ public class AccountController {
         System.out.println("enter an accountId - ");
         var accountId = UUID.fromString(scanner.next());
         var account = bank.getAccount(accountId);
-        System.out.format("accountId: %s", accountId);
-        System.out.format("balance: %s", account.getBalance());
+        System.out.format("accountId: %s\n", accountId);
+        System.out.format("balance: %s\n", account.getBalance().getValue());
         System.out.println("+++ successfully +++");
     }
 
