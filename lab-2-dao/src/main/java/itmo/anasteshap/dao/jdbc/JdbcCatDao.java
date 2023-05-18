@@ -111,9 +111,9 @@ public class JdbcCatDao implements CatDao {
                         rs.getString(2),
                         rs.getDate(3).toLocalDate(),
                         rs.getString(4),
-                        rs.getString(5)); // ??
+                        rs.getString(5),
+                        new JdbcOwnerDao().getById(rs.getLong(6)));
                 cat.setId(rs.getLong(1));
-                cat.setOwner(new JdbcOwnerDao().getById(rs.getLong(6)));
                 return cat;
             }
         } catch (SQLException e) {
@@ -157,9 +157,9 @@ public class JdbcCatDao implements CatDao {
                     rs.getString(2),
                     rs.getDate(3).toLocalDate(),
                     rs.getString(4),
-                    rs.getString(5));
+                    rs.getString(5),
+                    new JdbcOwnerDao().getById(rs.getLong(6)));
             cat.setId(rs.getLong(1));
-            cat.setOwner(new JdbcOwnerDao().getById(rs.getLong(6)));
             cats.add(cat);
         }
         return cats;

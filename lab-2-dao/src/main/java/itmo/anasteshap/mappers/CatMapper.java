@@ -6,9 +6,9 @@ import itmo.anasteshap.entities.Cat;
 public class CatMapper implements Mapper<Cat, CatDto> {
     @Override
     public Cat toEntity(CatDto dto) {
-        var cat = new Cat(dto.name(), dto.birthDate(), dto.breed(), dto.color());
+        // или лучше хранить owner_id в catDto?
+        var cat = new Cat(dto.name(), dto.birthDate(), dto.breed(), dto.color(), new OwnerMapper().toEntity(dto.owner()));
         cat.setId(dto.id());
-        cat.setOwner(new OwnerMapper().toEntity(dto.owner())); // или лучше хранить owner_id в catDto?
         return cat;
     }
 
