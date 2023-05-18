@@ -28,10 +28,11 @@ public class Cat {
     @JoinColumn(name = "owner_id")
     private Owner owner;
 
-    public Cat(String name, LocalDate birthDate, String breed, String color) {
+    public Cat(String name, LocalDate birthDate, String breed, String color, Owner owner) {
         this.name = name;
         this.birthDate = birthDate;
         this.breed = breed;
         this.color = color;
+        this.owner = owner;
     }
 }
