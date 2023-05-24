@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/owners")
-@Tag(name = "Хозяина", description = "Все методы для работы с хозяинами")
+@Tag(name = "Хозяины", description = "Все методы для работы с хозяинами")
 public class OwnerController {
     private final OwnerService ownerService;
 
@@ -49,7 +49,7 @@ public class OwnerController {
     }
 
     @GetMapping
-    @Operation(summary = "Получить информацию о всех хохяинах")
+    @Operation(summary = "Получить информацию о всех хозяинах")
     public ResponseEntity<?> getOwners(@RequestParam(required = false, defaultValue = "1") Integer page,
                                      @RequestParam(required = false, defaultValue = "10") Integer size) {
         var info = PageRequest.of(page - 1, size);
