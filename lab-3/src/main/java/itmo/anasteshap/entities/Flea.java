@@ -1,6 +1,7 @@
 package itmo.anasteshap.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ public class Flea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
+    @Min(1)
     private Long id;
 
     @NotBlank
@@ -21,6 +23,7 @@ public class Flea {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cat_id")
+    @Min(1)
     private Cat cat;
 
     public Flea(String name) {

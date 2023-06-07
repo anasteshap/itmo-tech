@@ -1,5 +1,6 @@
 package itmo.anasteshap.entities;
 
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -15,6 +16,7 @@ public class Cat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
+    @Min(1)
     private Long id;
 
     @NotBlank
@@ -37,6 +39,7 @@ public class Cat {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
+    @Min(1)
     private Owner owner;
 
     @Transient

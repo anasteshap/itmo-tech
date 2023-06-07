@@ -5,7 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import itmo.anasteshap.dto.create.CreateFleaRequest;
 import itmo.anasteshap.dto.responses.FleaResponse;
 import itmo.anasteshap.dto.update.UpdateFleaRequest;
-import itmo.anasteshap.services.FleaService;
+import itmo.anasteshap.services.impl.FleaServiceImpl;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,10 @@ import java.util.List;
 @RequestMapping("/fleas")
 @Tag(name = "Блохи", description = "Все методы для работы с блохами")
 public class FleaController {
-    private final FleaService fleaService;
+    private final FleaServiceImpl fleaService;
 
     @Autowired
-    public FleaController(FleaService fleaService) {
+    public FleaController(FleaServiceImpl fleaService) {
         this.fleaService = fleaService;
     }
 
@@ -34,13 +35,13 @@ public class FleaController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Получить блоху по ID")
-    public ResponseEntity<FleaResponse> getFleaById(@Validated @PathVariable Long id) {
+    public ResponseEntity<FleaResponse> getFleaById(@Min(1) @Validated @PathVariable Long id) {
         return new ResponseEntity<>(fleaService.getById(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удалить блоху по ID")
-    public ResponseEntity<FleaResponse> deleteFleaById(@Validated @PathVariable Long id) {
+    public ResponseEntity<FleaResponse> deleteFleaById(@Min(1) @Validated @PathVariable Long id) {
         fleaService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

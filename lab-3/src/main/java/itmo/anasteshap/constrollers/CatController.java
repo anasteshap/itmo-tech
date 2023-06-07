@@ -5,7 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import itmo.anasteshap.dto.create.CreateCatRequest;
 import itmo.anasteshap.dto.responses.CatResponse;
 import itmo.anasteshap.dto.update.UpdateCatRequest;
-import itmo.anasteshap.services.CatService;
+import itmo.anasteshap.services.impl.CatServiceImpl;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,10 @@ import java.util.List;
 @RequestMapping("/cats")
 @Tag(name = "Коты", description = "Все методы для работы с котами")
 public class CatController {
-    private final CatService catService;
+    private final CatServiceImpl catService;
 
     @Autowired
-    public CatController(CatService catService) {
+    public CatController(CatServiceImpl catService) {
         this.catService = catService;
     }
 
@@ -34,13 +35,13 @@ public class CatController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Получить кота по ID")
-    public ResponseEntity<CatResponse> getCatById(@Validated @PathVariable Long id) {
+    public ResponseEntity<CatResponse> getCatById(@Min(1) @Validated @PathVariable Long id) {
         return new ResponseEntity<>(catService.getById(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удалить кота по ID")
-    public ResponseEntity<CatResponse> deleteCatById(@Validated @PathVariable Long id) {
+    public ResponseEntity<CatResponse> deleteCatById(@Min(1) @Validated @PathVariable Long id) {
         catService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -61,7 +62,7 @@ public class CatController {
 
     @GetMapping("/{owner_id}/cats")
     @Operation(summary = "Получить всех котов у хозяина по его ID")
-    public ResponseEntity<List<CatResponse>> getAllByOwnerId(@Validated @PathVariable("owner_id") Long id) {
+    public ResponseEntity<List<CatResponse>> getAllByOwnerId(@Min(1) @Validated @PathVariable("owner_id") Long id) {
         return new ResponseEntity<>(catService.getAllByOwnerId(id), HttpStatus.OK);
     }
 

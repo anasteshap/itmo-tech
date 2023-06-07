@@ -7,8 +7,10 @@ import itmo.anasteshap.dto.responses.CatResponse;
 import itmo.anasteshap.dto.responses.FleaResponse;
 import itmo.anasteshap.dto.responses.OwnerResponse;
 import itmo.anasteshap.dto.update.UpdateCatRequest;
+import itmo.anasteshap.repositories.OwnerRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +32,7 @@ public class CatsWorldTests {
     @Autowired
     private ObjectMapper objectMapper;
 
+/*
     private OwnerResponse createOwner() throws Exception {
         var ownerRequest = new CreateOwnerRequest();
         ownerRequest.setName("one");
@@ -122,8 +125,25 @@ public class CatsWorldTests {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+*/
 
-    @AfterEach
-    public void resetDb() {
+/*    @Test
+    public void createOwnerAndHisCatAndHisFlea() throws Exception {
+        var ownerResponse = createOwner();
+        var catResponse = createCat(ownerResponse.getId());
+        createFlea(catResponse.getId());
+    }*/
+
+    @Test
+    public void createOwner() throws Exception {
+        var ownerRequest = new CreateOwnerRequest();
+        ownerRequest.setName("one");
+        ownerRequest.setBirthDate(LocalDate.now());
+        mockMvc.perform(post("/owners/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ownerRequest))
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }

@@ -5,7 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import itmo.anasteshap.dto.create.CreateOwnerRequest;
 import itmo.anasteshap.dto.responses.OwnerResponse;
 import itmo.anasteshap.dto.update.UpdateOwnerRequest;
-import itmo.anasteshap.services.OwnerService;
+import itmo.anasteshap.services.impl.OwnerServiceImpl;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,10 @@ import java.util.List;
 @RequestMapping("/owners")
 @Tag(name = "Хозяины", description = "Все методы для работы с хозяинами")
 public class OwnerController {
-    private final OwnerService ownerService;
+    private final OwnerServiceImpl ownerService;
 
     @Autowired
-    public OwnerController(OwnerService ownerService) {
+    public OwnerController(OwnerServiceImpl ownerService) {
         this.ownerService = ownerService;
     }
 
@@ -34,13 +35,13 @@ public class OwnerController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Получить хозяина по ID")
-    public ResponseEntity<OwnerResponse> getOwnerById(@Validated @PathVariable Long id) {
+    public ResponseEntity<OwnerResponse> getOwnerById(@Min(1) @Validated @PathVariable Long id) {
         return new ResponseEntity<>(ownerService.getById(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удалить хозяина по ID")
-    public ResponseEntity<OwnerResponse> deleteOwnerById(@Validated @PathVariable Long id) {
+    public ResponseEntity<OwnerResponse> deleteOwnerById(@Min(1) @Validated @PathVariable Long id) {
         ownerService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
