@@ -1,0 +1,37 @@
+-- CREATE TABLE if not exists users
+-- (
+--     id       bigserial             not null primary key,
+--     username character varying(60) not null,
+--     password character varying(60) not null
+-- );
+--
+--
+-- CREATE TABLE if not exists roles
+-- (
+--     id   bigserial             not null primary key,
+--     name character varying(60) not null
+-- );
+--
+-- CREATE TABLE if not exists users_roles
+-- (
+--     user_id bigint                not null,
+--     role_id bigint                not null,
+--
+--     FOREIGN KEY (user_id) REFERENCES users (id),
+--     FOREIGN KEY (role_id) REFERENCES roles (id),
+--
+--     UNIQUE (user_id, role_id)
+-- );
+--
+-- -- Insert data
+--
+-- INSERT INTO public.User
+-- VALUES (1, 'postgres', '$2a$12$WcgTpCYIEFJa.1qcRrdExuHNug5JkRV972slfrZjEAkYi8BEO2XOe', 'ROLE_ADMIN');
+-- --
+-- -- INSERT INTO roles
+-- -- VALUES (1, 'ROLE_USER');
+-- -- INSERT INTO roles
+-- -- VALUES (2, 'ROLE_ADMIN');
+-- --
+-- -- INSERT INTO users_roles
+-- -- VALUES (1, 2);

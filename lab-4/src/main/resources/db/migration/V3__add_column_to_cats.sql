@@ -1,0 +1,1 @@
+alter table public.Cat add tail_length int;
